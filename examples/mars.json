@@ -1,0 +1,65 @@
+{
+  "render": {
+    "resolution": [1280, 720],
+    "samples": 512,
+    "adaptive_threshold": 0.005,
+    "denoise": true,
+    "exposure": -0.35,
+    "output": "examples/mars.png"
+  },
+  "world": {
+    "sun_elevation_deg": 11.0,
+    "sun_rotation_deg": 40,
+    "sun_size_deg": 4.0,
+    "air_density": 0.7,
+    "dust_density": 3.2,
+    "sun_intensity": 2.2,
+    "use_sun_lamp": true,
+    "sun_lamp_strength": 7.0,
+    "sun_lamp_angle_deg": 2.0,
+    "sun_color": [1.0, 0.58, 0.34],
+    "sun_lateral_offset": 7.0,
+    "sun_glow_radius": 5.5,
+    "sun_glow_strength": 150.0,
+    "sun_glow_color": [1.0, 0.68, 0.45],
+    "background_strength": 0.35
+  },
+  "terrain": {
+    "size": 90,
+    "subdivisions": 448,
+    "base_height": 6.0,
+    "detail_height": 1.5,
+    "seed": 9
+  },
+  "water": {
+    "level": -3.5,
+    "size": 120,
+    "ripple_scale": 1.4
+  },
+  "monoliths": {
+    "count": 13,
+    "min_height": 7,
+    "max_height": 15,
+    "spread": 19,
+    "seed": 9
+  },
+  "fog": {
+    "cube_size": 150,
+    "density": 0.0075,
+    "detail": 0.6,
+    "anisotropy": 0.4,
+    "color": [0.92, 0.62, 0.42]
+  },
+  "dust": {
+    "count": 230000,
+    "area": 70,
+    "particle_size": 0.028
+  },
+  "camera": {
+    "location": [-13, -20, 3.2],
+    "target": [0.5, 2, 6],
+    "lens_mm": 28,
+    "fstop": 2.8,
+    "shift_y": 0.05
+  }
+}

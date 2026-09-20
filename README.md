@@ -19,7 +19,32 @@
 | 🎥 Camera | Track-to rig, depth of field, 24 mm cinematic lens |
 | 🖥️ Render | Cycles GPU (Metal), adaptive sampling, OpenImageDenoise, AgX |
 
+## 🖼️ Gallery / Galeri
+
+**EN:** Every world below is *just a different JSON file* — same generator, zero new code. Swap the seed, the sun, the fog color, and you get a different planet.
+
+**TR:** Aşağıdaki her dünya *sadece farklı bir JSON dosyası* — aynı üreteç, sıfır yeni kod. Seed'i, güneşi, sis rengini değiştir; bambaşka bir gezegen çıkar.
+
+### ❄️ Polar Dawn / Kutup Şafağı — [`examples/polar.json`](examples/polar.json)
+![Polar dawn render](examples/polar.png)
+Sun at 3.5°, icy blue fog and light. Taller, sharper spires frozen in place. — *Güneş 3.5°'te, buz mavisi sis ve ışık. Sivri, devrilmiş gibi duran kuleler.*
+
+### 🔴 Mars Dust / Mars Tozu — [`examples/mars.json`](examples/mars.json)
+![Mars render](examples/mars.png)
+High orange sun dissolved into butterscotch haze — the sun is a pale glow through the dust, just like real Mars photos. 230k dust grains, 13 scattered monoliths. — *Turuncu güneş karamel rengi tozda silik bir parıltı; 230 bin toz zerresi, 13 dağınık kule.*
+
+### 🌙 Moonless Night / Ay Isığı Gece — [`examples/night.json`](examples/night.json)
+![Night render](examples/night.png)
+A cold moon glowing faintly behind the spires of a black desert; only rim light survives. — *Kara çölün sivri kulelerinin ardında soluk bir ay; sadece kenar ışığı hayatta kalıyor.*
+
+Reproduce any of them / Hangisini istersen yeniden üret:
+
+```bash
+blender --background --python generator.py -- --scene examples/polar.json
+```
+
 ## 🚀 Usage / Kullanım
+
 
 ```bash
 # default scene
