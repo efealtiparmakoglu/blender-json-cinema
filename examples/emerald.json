@@ -1,0 +1,65 @@
+{
+  "render": {
+    "resolution": [1280, 720],
+    "samples": 512,
+    "adaptive_threshold": 0.005,
+    "denoise": true,
+    "exposure": -0.5,
+    "output": "examples/emerald.png"
+  },
+  "world": {
+    "sun_elevation_deg": 10.0,
+    "sun_rotation_deg": 40,
+    "sun_size_deg": 3.0,
+    "air_density": 1.0,
+    "dust_density": 1.8,
+    "sun_intensity": 2.0,
+    "use_sun_lamp": true,
+    "sun_lamp_strength": 5.5,
+    "sun_lamp_angle_deg": 2.5,
+    "sun_color": [0.55, 1.0, 0.78],
+    "sun_lateral_offset": 9.0,
+    "sun_glow_radius": 4.2,
+    "sun_glow_strength": 170.0,
+    "sun_glow_color": [0.45, 1.0, 0.72],
+    "background_strength": 0.30
+  },
+  "terrain": {
+    "size": 90,
+    "subdivisions": 448,
+    "base_height": 7.0,
+    "detail_height": 1.4,
+    "seed": 55
+  },
+  "water": {
+    "level": -0.2,
+    "size": 120,
+    "ripple_scale": 2.0
+  },
+  "monoliths": {
+    "count": 10,
+    "min_height": 11,
+    "max_height": 20,
+    "spread": 14,
+    "seed": 55
+  },
+  "fog": {
+    "cube_size": 150,
+    "density": 0.0055,
+    "detail": 0.55,
+    "anisotropy": 0.45,
+    "color": [0.35, 0.82, 0.60]
+  },
+  "dust": {
+    "count": 180000,
+    "area": 70,
+    "particle_size": 0.02
+  },
+  "camera": {
+    "location": [-16, -18, 2.6],
+    "target": [2, 2, 8],
+    "lens_mm": 25,
+    "fstop": 2.0,
+    "shift_y": 0.06
+  }
+}

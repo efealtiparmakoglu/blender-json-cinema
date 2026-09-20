@@ -1,0 +1,65 @@
+{
+  "render": {
+    "resolution": [1280, 720],
+    "samples": 512,
+    "adaptive_threshold": 0.005,
+    "denoise": true,
+    "exposure": -0.6,
+    "output": "examples/inferno.png"
+  },
+  "world": {
+    "sun_elevation_deg": 6.0,
+    "sun_rotation_deg": 40,
+    "sun_size_deg": 4.5,
+    "air_density": 1.1,
+    "dust_density": 3.0,
+    "sun_intensity": 2.4,
+    "use_sun_lamp": true,
+    "sun_lamp_strength": 6.5,
+    "sun_lamp_angle_deg": 2.5,
+    "sun_color": [1.0, 0.22, 0.08],
+    "sun_lateral_offset": 8.0,
+    "sun_glow_radius": 5.0,
+    "sun_glow_strength": 220.0,
+    "sun_glow_color": [1.0, 0.35, 0.12],
+    "background_strength": 0.28
+  },
+  "terrain": {
+    "size": 90,
+    "subdivisions": 448,
+    "base_height": 8.5,
+    "detail_height": 1.6,
+    "seed": 13
+  },
+  "water": {
+    "level": -2.0,
+    "size": 120,
+    "ripple_scale": 2.2
+  },
+  "monoliths": {
+    "count": 12,
+    "min_height": 10,
+    "max_height": 22,
+    "spread": 15,
+    "seed": 13
+  },
+  "fog": {
+    "cube_size": 150,
+    "density": 0.009,
+    "detail": 0.6,
+    "anisotropy": 0.5,
+    "color": [0.90, 0.28, 0.14]
+  },
+  "dust": {
+    "count": 300000,
+    "area": 70,
+    "particle_size": 0.024
+  },
+  "camera": {
+    "location": [-14, -20, 2.0],
+    "target": [1, 2, 8],
+    "lens_mm": 30,
+    "fstop": 2.4,
+    "shift_y": 0.06
+  }
+}
