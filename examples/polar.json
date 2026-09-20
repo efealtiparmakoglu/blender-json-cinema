@@ -1,0 +1,65 @@
+{
+  "render": {
+    "resolution": [1280, 720],
+    "samples": 512,
+    "adaptive_threshold": 0.005,
+    "denoise": true,
+    "exposure": -0.5,
+    "output": "examples/polar.png"
+  },
+  "world": {
+    "sun_elevation_deg": 3.5,
+    "sun_rotation_deg": 40,
+    "sun_size_deg": 3.0,
+    "air_density": 0.9,
+    "dust_density": 0.8,
+    "sun_intensity": 2.0,
+    "use_sun_lamp": true,
+    "sun_lamp_strength": 5.0,
+    "sun_lamp_angle_deg": 3.5,
+    "sun_color": [0.72, 0.84, 1.0],
+    "sun_lateral_offset": 9.0,
+    "sun_glow_radius": 4.5,
+    "sun_glow_strength": 130.0,
+    "sun_glow_color": [0.85, 0.92, 1.0],
+    "background_strength": 0.35
+  },
+  "terrain": {
+    "size": 90,
+    "subdivisions": 448,
+    "base_height": 9.0,
+    "detail_height": 1.6,
+    "seed": 42
+  },
+  "water": {
+    "level": -1.4,
+    "size": 120,
+    "ripple_scale": 2.6
+  },
+  "monoliths": {
+    "count": 7,
+    "min_height": 11,
+    "max_height": 19,
+    "spread": 14,
+    "seed": 42
+  },
+  "fog": {
+    "cube_size": 150,
+    "density": 0.006,
+    "detail": 0.55,
+    "anisotropy": 0.45,
+    "color": [0.78, 0.87, 1.0]
+  },
+  "dust": {
+    "count": 110000,
+    "area": 70,
+    "particle_size": 0.018
+  },
+  "camera": {
+    "location": [-15, -19, 2.6],
+    "target": [1.5, 2, 7.5],
+    "lens_mm": 26,
+    "fstop": 2.2,
+    "shift_y": 0.06
+  }
+}

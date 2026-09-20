@@ -236,7 +236,7 @@ def gunes_kur(cfg):
     light = bpy.data.lights.new("Gunes", "SUN")
     light.energy = w.get("sun_lamp_strength", 4.0)
     p(light, "angle", math.radians(w.get("sun_lamp_angle_deg", 2.5)))
-    p(light, "color", (1.0, 0.82, 0.62))
+    p(light, "color", w.get("sun_color", [1.0, 0.82, 0.62]))
     obj = bpy.data.objects.new("Gunes", light)
     bpy.context.scene.collection.objects.link(obj)
 
@@ -265,7 +265,7 @@ def gunes_kur(cfg):
     dnt.nodes.clear()
     dout = dnt.nodes.new("ShaderNodeOutputMaterial")
     dem = dnt.nodes.new("ShaderNodeEmission")
-    p(dem.inputs["Color"], "default_value", (1.0, 0.75, 0.45, 1))
+    p(dem.inputs["Color"], "default_value", tuple(w.get("sun_glow_color", [1.0, 0.75, 0.45])) + (1.0,))
     dem.inputs["Strength"].default_value = w.get("sun_glow_strength", 40.0)
     dnt.links.new(dem.outputs["Emission"], dout.inputs["Surface"])
     disk.data.materials.append(dm)
@@ -305,7 +305,7 @@ def sis_kur(cfg):
     nt.links.new(ramp.outputs["Color"], mult.inputs[0])
     nt.links.new(mult.outputs["Value"], vol.inputs["Density"])
     p(vol.inputs["Anisotropy"], "default_value", c.get("anisotropy", 0.3))
-    p(vol.inputs["Color"], "default_value", (0.85, 0.80, 0.72, 1))
+    p(vol.inputs["Color"], "default_value", tuple(c.get("color", [0.85, 0.80, 0.72])) + (1.0,))
     nt.links.new(vol.outputs["Volume"], out.inputs["Volume"])
     obj.data.materials.append(m)
     print("  [ok] Hacimsel sis")
@@ -415,7 +415,7 @@ def render_kur(cfg, preview=False):
     # sinematik renk
     p(sc.view_settings, "view_transform", "AgX")
     p(sc.view_settings, "look", "AgX - Medium High Contrast")
-    p(sc.view_settings, "exposure", -0.8)
+    p(sc.view_settings, "exposure", r.get("exposure", -0.8))
 
     print(f"  [ok] Render {sc.render.resolution_x}x{sc.render.resolution_y}, "
           f"{sc.cycles.samples} sample, hedef: {sc.render.filepath}")
