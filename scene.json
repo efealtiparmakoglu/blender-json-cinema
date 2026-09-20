@@ -1,0 +1,61 @@
+{
+  "render": {
+    "resolution": [1920, 1080],
+    "samples": 1024,
+    "adaptive_threshold": 0.005,
+    "denoise": true,
+    "output": "renders/hero.png"
+  },
+  "world": {
+    "sun_elevation_deg": 8.0,
+    "sun_rotation_deg": 40,
+    "sun_size_deg": 3.0,
+    "air_density": 1.0,
+    "dust_density": 1.4,
+    "sun_intensity": 2.5,
+    "use_sun_lamp": true,
+    "sun_lamp_strength": 6.0,
+    "sun_lamp_angle_deg": 2.5,
+    "sun_lateral_offset": 8.0,
+    "sun_glow_radius": 4.0,
+    "sun_glow_strength": 150.0,
+    "background_strength": 0.25
+  },
+  "terrain": {
+    "size": 90,
+    "subdivisions": 448,
+    "base_height": 7.5,
+    "detail_height": 1.2,
+    "seed": 7
+  },
+  "water": {
+    "level": -0.8,
+    "size": 120,
+    "ripple_scale": 1.8
+  },
+  "monoliths": {
+    "count": 9,
+    "min_height": 9,
+    "max_height": 17,
+    "spread": 13,
+    "seed": 21
+  },
+  "fog": {
+    "cube_size": 150,
+    "density": 0.0035,
+    "detail": 0.55,
+    "anisotropy": 0.45
+  },
+  "dust": {
+    "count": 160000,
+    "area": 70,
+    "particle_size": 0.02
+  },
+  "camera": {
+    "location": [-16, -19, 2.4],
+    "target": [1.5, 2, 7],
+    "lens_mm": 24,
+    "fstop": 2.0,
+    "shift_y": 0.06
+  }
+}
