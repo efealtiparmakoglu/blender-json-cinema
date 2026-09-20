@@ -1,0 +1,65 @@
+{
+  "render": {
+    "resolution": [1280, 720],
+    "samples": 512,
+    "adaptive_threshold": 0.005,
+    "denoise": true,
+    "exposure": -0.9,
+    "output": "examples/whiteout.png"
+  },
+  "world": {
+    "sun_elevation_deg": 2.0,
+    "sun_rotation_deg": 40,
+    "sun_size_deg": 2.0,
+    "air_density": 1.0,
+    "dust_density": 1.0,
+    "sun_intensity": 1.8,
+    "use_sun_lamp": true,
+    "sun_lamp_strength": 3.5,
+    "sun_lamp_angle_deg": 5.0,
+    "sun_color": [0.9, 0.93, 1.0],
+    "sun_lateral_offset": 6.0,
+    "sun_glow_radius": 3.5,
+    "sun_glow_strength": 200.0,
+    "sun_glow_color": [0.92, 0.95, 1.0],
+    "background_strength": 0.12
+  },
+  "terrain": {
+    "size": 90,
+    "subdivisions": 448,
+    "base_height": 6.0,
+    "detail_height": 1.0,
+    "seed": 88
+  },
+  "water": {
+    "level": -1.8,
+    "size": 120,
+    "ripple_scale": 2.4
+  },
+  "monoliths": {
+    "count": 6,
+    "min_height": 9,
+    "max_height": 15,
+    "spread": 12,
+    "seed": 88
+  },
+  "fog": {
+    "cube_size": 150,
+    "density": 0.03,
+    "detail": 0.5,
+    "anisotropy": 0.5,
+    "color": [0.88, 0.92, 0.98]
+  },
+  "dust": {
+    "count": 350000,
+    "area": 70,
+    "particle_size": 0.03
+  },
+  "camera": {
+    "location": [-15, -19, 2.2],
+    "target": [1.5, 2, 6],
+    "lens_mm": 26,
+    "fstop": 2.6,
+    "shift_y": 0.06
+  }
+}

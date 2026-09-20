@@ -37,6 +37,22 @@ High orange sun dissolved into butterscotch haze — the sun is a pale glow thro
 ![Night render](examples/night.png)
 A cold moon glowing faintly behind the spires of a black desert; only rim light survives. — *Kara çölün sivri kulelerinin ardında soluk bir ay; sadece kenar ışığı hayatta kalıyor.*
 
+### 🔥 Inferno / Cehennem — [`examples/inferno.json`](examples/inferno.json)
+![Inferno render](examples/inferno.png)
+A blood-red sun bleeding through ember fog; 300k embers drift over a scorched valley. — *Kan kırmızısı güneş kor sisinden kanıyor; yanmış vadide 300 bin kor süzülüyor.*
+
+### 💚 Emerald / Zümrüt Gezegen — [`examples/emerald.json`](examples/emerald.json)
+![Emerald render](examples/emerald.png)
+Teal sunlight and jade fog — nothing on this planet is from Earth. — *Turkuaz güneş ışığı ve yeşim sis — bu gezegenden hiçbir şey Dünya'dan değil.*
+
+### 🗿 Colossus / Koloslar — [`examples/colossus.json`](examples/colossus.json)
+![Colossus render](examples/colossus.png)
+Giants against a 20 mm lens from trench level — scale is the story. — *Siper hizasından 20 mm lensle devler — hikâye ölçeğin kendisi.*
+
+### ⚪ Whiteout / Sis Sınırı — [`examples/whiteout.json`](examples/whiteout.json)
+![Whiteout render](examples/whiteout.png)
+The volumetric dial turned to maximum: the mid-ground dissolves into haze and the sun becomes a pale smear. Heaviest fog this generator can carry. — *Hacimsel sis düğmesi sonuna kadar açıldı: orta plan sise çözülüyor, güneş soluk bir lekeye dönüşüyor.*
+
 Reproduce any of them / Hangisini istersen yeniden üret:
 
 ```bash
