@@ -4,8 +4,12 @@ JSON Cinematic — JSON tanımından prosedürel sinematik sahne kuran Blender �
 Kullanım:
     blender --background --python generator.py                      # scene.json kullanır
     blender --background --python generator.py -- --scene other.json --preview
+    blender --background --python generator.py -- --anim            # JSON'daki animation bloğu
+    blender --background --python generator.py -- --anim-preview    # 12 karelik hızlı önizleme
 
---preview: hızlı doğrulama için 320x180 / 32 sample render alır.
+--preview: 320x180 / 32 sample tek kare.
+--anim: kamera yolunu cam_path hesaplar (sabit hız, arazi temizliği), her kareyi
+    animation.output_dir'e yazar; anim_report.json teşhis raporu üretir.
 """
 
 import json
@@ -15,6 +19,9 @@ import random
 import sys
 
 import bpy
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import cam_path  # noqa: E402
 
 # ---------------------------------------------------------------- yardımcılar
 
@@ -30,7 +37,7 @@ def p(obj, attr, val):
 
 def arg_repo():
     args = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
-    opts = {"scene": "scene.json", "preview": False}
+    opts = {"scene": "scene.json", "preview": False, "anim": False, "anim_preview": False}
     i = 0
     while i < len(args):
         if args[i] == "--scene":
@@ -38,6 +45,13 @@ def arg_repo():
             i += 2
         elif args[i] == "--preview":
             opts["preview"] = True
+            i += 1
+        elif args[i] == "--anim":
+            opts["anim"] = True
+            i += 1
+        elif args[i] == "--anim-preview":
+            opts["anim"] = True
+            opts["anim_preview"] = True
             i += 1
         else:
             i += 1
@@ -312,8 +326,12 @@ def sis_kur(cfg):
     return obj
 
 
-def toz_kur(cfg):
-    """Güneşte parlayan yüz binlerce toz zerresi."""
+def toz_kur(cfg, frames=None):
+    """Güneşte parlayan yüz binlerce toz zerresi.
+
+    frames verilirse parçacık ömrü tüm animasyonu kapsar (yoksa 10. karede
+    tüm toz kaybolur — kamera animasyonunun ilk sessiz katili).
+    """
     c = cfg["dust"]
     bpy.ops.mesh.primitive_plane_add(size=c["area"], location=(0, 0, 8))
     emitter = bpy.context.active_object
@@ -348,7 +366,7 @@ def toz_kur(cfg):
     ps.render_type = "OBJECT"
     ps.instance_object = zerre
     p(ps, "particle_size", 1.0)
-    p(ps, "lifetime", 10)
+    p(ps, "lifetime", (frames + 2) if frames else 10)
     print(f"  [ok] {c['count']:,} toz zerresi")
     return emitter
 
@@ -372,7 +390,7 @@ def kamera_kur(cfg):
     return cam
 
 
-def render_kur(cfg, preview=False):
+def render_kur(cfg, preview=False, anim_cfg=None):
     sc = bpy.context.scene
     sc.render.engine = "CYCLES"
     r = cfg["render"]
@@ -393,6 +411,10 @@ def render_kur(cfg, preview=False):
     if preview:
         sc.render.resolution_x, sc.render.resolution_y = 320, 180
         sc.cycles.samples = 32
+    elif anim_cfg:
+        # hareket için ayar: poster (1080p/1024spp) değil, kare başına gerçek zaman
+        sc.render.resolution_x, sc.render.resolution_y = anim_cfg.get("resolution", [960, 540])
+        sc.cycles.samples = anim_cfg.get("samples", 64)
     else:
         sc.render.resolution_x, sc.render.resolution_y = r["resolution"]
         sc.cycles.samples = r["samples"]
@@ -421,6 +443,87 @@ def render_kur(cfg, preview=False):
           f"{sc.cycles.samples} sample, hedef: {sc.render.filepath}")
 
 
+# ---------------------------------------------------------------- kamera animasyonu
+
+def arazi_haritasi(arazi_obj):
+    """Modifier'lar işlenmiş gerçek mesh'ten yükseklik haritası (TerrainMap)."""
+    deps = bpy.context.evaluated_depsgraph_get()
+    ev = arazi_obj.evaluated_get(deps)
+    verts = [(v.co.x, v.co.y, v.co.z) for v in ev.data.vertices]
+    print(f"  [ok] Arazi haritası: {len(verts):,} tepe noktası")
+    return cam_path.TerrainMap(verts, cell=2.0)
+
+
+def sabit_hiz_yolu(cam):
+    """Tüm konum anahtarlarını LINEAR yap — Bezier ease sahte yumuşatmadır.
+
+    Blender 4.4+ slotted action (Action.fcurves kaldırıldı), eskisi tek kanal;
+    ikisine de uyan yoldan git.
+    """
+    ad = cam.animation_data
+    fcs = []
+    if ad and ad.action:
+        act = ad.action
+        if hasattr(act, "fcurves"):  # <= 4.3
+            fcs = list(act.fcurves)
+        else:  # 4.4+ slotted
+            for layer in act.layers:
+                for strip in layer.strips:
+                    for bag in strip.channelbags:
+                        fcs.extend(bag.fcurves)
+    n = 0
+    for fc in fcs:
+        for kp in fc.keyframe_points:
+            kp.interpolation = "LINEAR"
+            n += 1
+    print(f"  [ok] {n} anahtar LINEAR (sabit hız)")
+
+
+def anim_kur(cfg, cam, arazi_obj):
+    """JSON animation bloğundan kamera yolu: sabit hız + arazi temizliği."""
+    a = cfg["animation"]
+    n = a["frames"]
+    if a["type"] == "orbit":
+        pts = cam_path.orbit_points(
+            a.get("center", [0, 0, 0]), a["radius"], a["height"],
+            a["azimuth_start_deg"], a["azimuth_end_deg"], n)
+    elif a["type"] == "dolly":
+        pts = cam_path.dolly_points(a["start"], a["end"], n, bow=a.get("bow", 0.0))
+    else:
+        raise ValueError(f"bilinmeyen anim tipi: {a['type']}")
+
+    tm = arazi_haritasi(arazi_obj)
+    pts, rep = tm.clearance_fix(pts, a.get("terrain_margin", 2.5))
+
+    odak = bpy.data.objects["Odak"]
+    odak.location = tuple(a["look_at"])
+
+    sc = bpy.context.scene
+    sc.frame_start = 1
+    sc.frame_end = n
+    sc.render.fps = a["fps"]
+
+    for i, (x, y, z) in enumerate(pts):
+        cam.location = (x, y, z)
+        cam.keyframe_insert(data_path="location", frame=i + 1)
+    sabit_hiz_yolu(cam)
+
+    print(f"  [ok] Anim yolu: {n} kare, {a['type']}, {rep['raised']} nokta yükseltildi")
+    if rep["worst"]:
+        w = rep["worst"]
+        print(f"       en kritik: {w['xy']} arazi {w['terrain_max']} -> kamera z {w['final_z']}")
+    return pts, rep
+
+
+def anim_rapor_yaz(out_dir, pts, rep, a):
+    per = [{"frame": i + 1, "x": round(x, 3), "y": round(y, 3), "z": round(z, 3)}
+           for i, (x, y, z) in enumerate(pts)]
+    doc = {"frames": a["frames"], "fps": a["fps"], "type": a["type"],
+           "raised": rep["raised"], "worst": rep["worst"], "path": per}
+    with open(os.path.join(out_dir, "anim_report.json"), "w", encoding="utf-8") as f:
+        json.dump(doc, f, indent=2)
+
+
 # ---------------------------------------------------------------- ana
 
 def main():
@@ -431,20 +534,46 @@ def main():
     print(f"== JSON Cinematic :: {opts['scene']} ==")
     temiz_sahne()
     dunya_kur(cfg)
-    arazi_kur(cfg)
+    arazi = arazi_kur(cfg)
     su_kur(cfg)
     monolitler_kur(cfg)
     gunes_kur(cfg)
     sis_kur(cfg)
-    toz_kur(cfg)
-    kamera_kur(cfg)
-    render_kur(cfg, preview=opts["preview"])
 
-    out = os.path.abspath(cfg["render"]["output"])
-    if opts["preview"]:
-        bpy.context.scene.render.filepath = out.replace(".png", "_preview.png")
-    bpy.ops.render.render(write_still=True)
-    print(f"== BİTTİ -> {bpy.context.scene.render.filepath} ==")
+    anim_cfg = cfg["animation"] if (opts["anim"] and "animation" in cfg) else None
+    toz_kur(cfg, frames=anim_cfg["frames"] if anim_cfg else None)
+    cam = kamera_kur(cfg)
+    render_kur(cfg, preview=opts["preview"] or opts["anim_preview"], anim_cfg=anim_cfg)
+
+    if opts["anim"]:
+        if anim_cfg is None:
+            raise SystemExit("JSON'da animation bloğu yok; --anim kullanılamaz")
+        a = anim_cfg
+        pts, rep = anim_kur(cfg, cam, arazi)
+        out_dir = os.path.abspath(a["output_dir"])
+        if opts["anim_preview"]:
+            idxs = sorted({1 + round(i * (a["frames"] - 1) / 11) for i in range(12)})
+            out_dir = os.path.join(out_dir, "preview")
+        else:
+            idxs = list(range(1, a["frames"] + 1))
+        os.makedirs(out_dir, exist_ok=True)
+        anim_rapor_yaz(out_dir, pts, rep, a)
+
+        import time
+        sc = bpy.context.scene
+        for fno in idxs:
+            t0 = time.time()
+            sc.frame_set(fno)
+            sc.render.filepath = os.path.join(out_dir, f"frame_{fno:04d}.png")
+            bpy.ops.render.render(write_still=True)
+            print(f"  [kare {fno}/{a['frames']}] {time.time() - t0:.1f}s", flush=True)
+        print(f"== BİTTİ -> {out_dir} ==")
+    else:
+        out = os.path.abspath(cfg["render"]["output"])
+        if opts["preview"]:
+            bpy.context.scene.render.filepath = out.replace(".png", "_preview.png")
+        bpy.ops.render.render(write_still=True)
+        print(f"== BİTTİ -> {bpy.context.scene.render.filepath} ==")
 
 
 main()

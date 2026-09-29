@@ -57,5 +57,20 @@
     "lens_mm": 24,
     "fstop": 2.0,
     "shift_y": 0.06
+  },
+  "animation": {
+    "frames": 48,
+    "fps": 12,
+    "resolution": [960, 540],
+    "samples": 64,
+    "type": "orbit",
+    "center": [0, 0, 0],
+    "radius": 34,
+    "height": 9.5,
+    "azimuth_start_deg": 0,
+    "azimuth_end_deg": 360,
+    "look_at": [0, 0, 5.5],
+    "terrain_margin": 2.5,
+    "output_dir": "renders/flythrough"
   }
 }
