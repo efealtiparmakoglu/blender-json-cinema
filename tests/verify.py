@@ -14,6 +14,7 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 import cam_path  # noqa: E402
+import scene_config  # noqa: E402
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -51,6 +52,10 @@ def g1_schema():
         with open(path, encoding="utf-8") as f:
             cfg = json.load(f)
         rel = os.path.relpath(path, REPO)
+        try:
+            scene_config.validate_scene(cfg)
+        except ValueError as exc:
+            errs.append(f"{rel}: {exc}")
         for sect, keys in REQUIRED.items():
             if sect not in cfg:
                 errs.append(f"{rel}: bölüm yok: {sect}")

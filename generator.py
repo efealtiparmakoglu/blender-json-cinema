@@ -18,10 +18,9 @@ import os
 import random
 import sys
 
-import bpy
-
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import cam_path  # noqa: E402
+import scene_config  # noqa: E402
 
 # ---------------------------------------------------------------- yardımcılar
 
@@ -36,26 +35,13 @@ def p(obj, attr, val):
 
 
 def arg_repo():
-    args = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
-    opts = {"scene": "scene.json", "preview": False, "anim": False, "anim_preview": False}
-    i = 0
-    while i < len(args):
-        if args[i] == "--scene":
-            opts["scene"] = args[i + 1]
-            i += 2
-        elif args[i] == "--preview":
-            opts["preview"] = True
-            i += 1
-        elif args[i] == "--anim":
-            opts["anim"] = True
-            i += 1
-        elif args[i] == "--anim-preview":
-            opts["anim"] = True
-            opts["anim_preview"] = True
-            i += 1
-        else:
-            i += 1
-    return opts
+    if "--" in sys.argv:
+        args = sys.argv[sys.argv.index("--") + 1:]
+    elif os.path.abspath(sys.argv[0]) == os.path.abspath(__file__):
+        args = sys.argv[1:]
+    else:
+        args = []  # Blender's own flags belong to Blender, not this script.
+    return scene_config.parse_args(args)
 
 
 def temiz_sahne():
@@ -528,8 +514,17 @@ def anim_rapor_yaz(out_dir, pts, rep, a):
 
 def main():
     opts = arg_repo()
-    with open(opts["scene"], encoding="utf-8") as f:
-        cfg = json.load(f)
+    try:
+        cfg = scene_config.load_scene(opts["scene"], require_animation=opts["anim"])
+    except (OSError, ValueError) as exc:
+        raise SystemExit(f"Scene error: {exc}") from exc
+    if opts["check"]:
+        print(f"Scene valid: {opts['scene']}")
+        return
+
+    # Validation and --check run without importing Blender or clearing a scene.
+    global bpy
+    import bpy
 
     print(f"== JSON Cinematic :: {opts['scene']} ==")
     temiz_sahne()
@@ -571,9 +566,11 @@ def main():
     else:
         out = os.path.abspath(cfg["render"]["output"])
         if opts["preview"]:
-            bpy.context.scene.render.filepath = out.replace(".png", "_preview.png")
+            base, _ = os.path.splitext(out)
+            bpy.context.scene.render.filepath = base + "_preview.png"
         bpy.ops.render.render(write_still=True)
         print(f"== BİTTİ -> {bpy.context.scene.render.filepath} ==")
 
 
-main()
+if __name__ == "__main__":
+    main()

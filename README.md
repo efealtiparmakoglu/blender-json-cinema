@@ -1,5 +1,7 @@
 # 🎞️ JSON Cinematic — Blender
 
+[![CI](https://github.com/efealtiparmakoglu/blender-json-cinema/actions/workflows/ci.yml/badge.svg)](https://github.com/efealtiparmakoglu/blender-json-cinema/actions/workflows/ci.yml)
+
 **EN:** A JSON-driven procedural cinematic scene generator for Blender. Feed it one JSON file, get a fully ray-traced cinematic render out — terrain, water, monoliths, volumetric god-rays, 160k dust particles, physical atmosphere, all built from parameters.
 
 **TR:** Blender için JSON ile çalışan prosedürel sinematik sahne üreteci. Tek bir JSON dosyası veriyorsun; arazi, su, monolitler, hacimsel ışık huzmeleri, 160 bin toz zerresi ve fiziksel atmosferle birlikte tam yol-izlemeli (path tracing) sinematik render alıyorsun.
@@ -62,6 +64,28 @@ blender --background --python generator.py -- --scene examples/polar.json
 
 ## 🚀 Usage / Kullanım
 
+Start from the repository root / Repo kökünden başlayın:
+
+```bash
+git clone https://github.com/efealtiparmakoglu/blender-json-cinema.git
+cd blender-json-cinema
+
+# validate before starting Blender (Python standard library only)
+python3 generator.py --check --scene scene.json
+# validate an animation configuration without rendering
+python3 generator.py --check --anim --scene scene.json
+```
+
+**EN:** Required fields, numeric ranges, vectors and animation geometry are
+checked before importing Blender, clearing a scene or building geometry. Unknown
+CLI options and missing option values are errors. Relative scene/output paths
+are resolved from the working directory. `--check` writes no render files.
+
+**TR:** Eksik alanlar, sayısal sınırlar, vektörler ve animasyon yolu Blender
+başlatılmadan denetlenir. Yanlış seçenek sessizce atlanmaz. `--check` render
+üretmez ve mevcut Blender sahnesini değiştirmez. Göreli yollar çalışma klasörüne
+göredir. Tek kare önizleme ayrı `_preview.png` dosyasına yazılır.
+
 
 ```bash
 # default scene
@@ -70,7 +94,7 @@ blender --background --python generator.py
 # your own scene
 blender --background --python generator.py -- --scene my_scene.json
 
-# fast 320p validation pass
+# fast 320×180 render preview
 blender --background --python generator.py -- --preview
 
 # camera flythrough from the "animation" block (48 frames -> GIF/MP4 ready)
@@ -83,8 +107,14 @@ blender --background --python generator.py -- --anim-preview
 python3 tests/verify.py
 ```
 
-Requires **Blender 4.x / 5.x** (tested on 5.2 LTS, Apple Silicon / Metal).
-No add-ons, no dependencies — just Python + Blender.
+Rendering requires **Blender 4.x / 5.x** (locally tested on 5.2 LTS, Apple Silicon / Metal).
+No add-ons or third-party Python packages are required. The CI matrix uses Python
+3.11/3.12 to check all bundled JSON examples, camera mathematics and validation/CLI
+regressions; CI does not render images or certify every Blender version.
+
+```bash
+python3 -m unittest discover -s tests -p test_scene_config.py -v
+```
 
 ## 🎥 Motion / Hareket
 
